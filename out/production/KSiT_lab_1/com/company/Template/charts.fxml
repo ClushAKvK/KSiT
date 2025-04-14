@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ChartsController">
+    <VBox spacing="10" padding="10">
+        <LineChart fx:id="wChart" title="Среднее время пребывания W(x)">
+            <xAxis>
+                <NumberAxis label="Эксперимент"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis label="W(x)"/>
+            </yAxis>
+        </LineChart>
+
+        <LineChart fx:id="pBusyChart" title="Загрузка сервера P_busy(x)">
+            <xAxis>
+                <NumberAxis label="Эксперимент"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis label="P_busy"/>
+            </yAxis>
+        </LineChart>
+    </VBox>
+</AnchorPane>
