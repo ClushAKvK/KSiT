@@ -1,5 +1,7 @@
 package com.company.DIPrincess;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class Simulation {
@@ -187,6 +189,9 @@ public class Simulation {
         scheduleNextArrival(0);
 
         double totalDelay = 0;
+        List<Integer> queueSizes = new ArrayList<>();
+        List<Double> intervals = new ArrayList<>();
+        List<Double> delays = new ArrayList<>();
 
         while (globalClock < maxTime && !eventQueue.isEmpty()) {
             TotalCountQueue++;
@@ -198,16 +203,26 @@ public class Simulation {
             globalClock = event.time;
 
             switch (event.type) {
-                case ARRIVAL : handleArrival(event);
+                case ARRIVAL : handleArrival(event); break;
                 case DEPARTURE : {
                     totalDelay += globalClock - event.task.arrivalTime;
                     handleDeparture(event);
+
+                    intervals.add(globalClock - event.task.arrivalTime); // Собираем интервал времени
+                    queueSizes.add(server.activeTasks.size());           // Собираем размер очереди
+
+                    double arrivalTime = event.task.arrivalTime;
+                    double departureTime = event.task.departureTime;
+                    double delay = departureTime - arrivalTime;
+                    delays.add(delay);
+
+                    break;
                 }
             }
         }
 
         return new SimulationResult(server.processed, server.busyTime, globalClock, totalDelay,
-                TotalCountQueue, TotalCountQueueInLn, depaturesCount, depaturesCountAout);
+                TotalCountQueue, TotalCountQueueInLn, depaturesCount, depaturesCountAout, queueSizes, intervals, delays);
     }
 }
 

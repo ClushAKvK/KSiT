@@ -14,7 +14,7 @@ public class Main {
 
 
         Simulation simulation = new Simulation(bufferSize, T, meanTau, meanSigma, R_a, R_b, Ln, Aout);
-        simulation.run();
+       // simulation.run();
     }
 }
 
