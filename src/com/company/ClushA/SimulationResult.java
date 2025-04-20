@@ -6,6 +6,8 @@ public class SimulationResult {
     public double totalTime;
     public double totalDelay;
     public double[] waitTimeCDF;
+    public double denials;
+    public double totalArrivals;
     public double rejectionProbability;
 
     public SimulationResult(int tasksProcessed, double busyTime, double totalTime, double totalDelay,
@@ -15,6 +17,8 @@ public class SimulationResult {
         this.totalTime = totalTime;
         this.totalDelay = totalDelay;
         this.waitTimeCDF = waitTimeCDF;
+        this.denials = denials;
+        this.totalArrivals = totalArrivals;
         this.rejectionProbability = (double) denials / totalArrivals;
     }
 
