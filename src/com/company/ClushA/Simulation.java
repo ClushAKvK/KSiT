@@ -17,13 +17,15 @@ public class Simulation {
     private double globalClock = 0.0;
     private int taskCounter = 0;
 
+    private double totalDelay = 0;
+
     public Simulation(int bufferSize, int maxTasks, double meanTau, double meanSigma) {
         this.server = new Server(bufferSize);
         this.maxTasks = maxTasks;
         this.meanTau = meanTau;
         this.meanSigma = meanSigma;
 
-        this.stddev = meanSigma / 3.0;
+        this.stddev = meanSigma / 3;
 
         if (meanSigma / meanTau >= 1.0) {
             throw new IllegalArgumentException("Система нестабильна: ρ >= 1");
@@ -48,6 +50,7 @@ public class Simulation {
 
     private void handleArrival(Event e) {
         Task task = e.task;
+        //System.out.println(e.task.arrivalTime + " " + e.task.serviceTime);
         if (!server.isBusy()) {
             server.startTask(task, globalClock);
 
@@ -55,7 +58,7 @@ public class Simulation {
             task.queueExitTime = globalClock;
             // Ограничиваем время обработки квантом
             double remainingTime = task.serviceTime;
-            if (remainingTime > meanSigma) {
+            if (remainingTime > meanSigma && false) {
                 task.serviceTime = meanSigma;  // Обрабатываем только quantum времени
                 scheduleEvent(globalClock + meanSigma, Event.Type.DEPARTURE, task);
             } else {
@@ -83,10 +86,16 @@ public class Simulation {
             currentTask.serviceTime = remainingTime;
             server.addToBuffer(currentTask);  // Возвращаем в очередь
         }
+        if (remainingTime <= 0) {
+            totalDelay += globalClock - currentTask.initialArrivalTime;
+            System.out.println(totalDelay);
+        }
+
 
         // Берём следующую задачу из очереди
         Task nextTask = server.fetchFromBuffer();
         if (nextTask != null) {
+            //System.out.println(1);
             nextTask.queueExitTime = globalClock; // Фиксируем выход из очереди
             waitTimes.add(nextTask.getQueueWaitTime());
             server.startTask(nextTask, globalClock);
@@ -100,6 +109,7 @@ public class Simulation {
         Task task = new Task();
         task.id = taskCounter++;
         task.arrivalTime = currentTime + sampleTau();
+        task.initialArrivalTime = task.arrivalTime;
         task.serviceTime = sampleSigma();
 
         scheduleEvent(task.arrivalTime, Event.Type.ARRIVAL, task);
@@ -115,9 +125,10 @@ public class Simulation {
         final int k = 5; // порядок распределения Эрланга
         double erlangSum = 0.0;
 
+        System.out.println(Math.random());
         // Суммируем k экспоненциальных случайных величин
         for (int i = 0; i < k; i++) {
-            erlangSum += -meanTau * Math.log(1 - Math.random());
+            erlangSum += -meanTau * Math.log(1 - Math.random()/2);
         }
 
         // Добавляем детерминированную составляющую (например, 10% от среднего)
@@ -148,7 +159,6 @@ public class Simulation {
     public SimulationResult runAndCollect() {
         scheduleNextArrival(0);
 
-        double totalDelay = 0;
         waitTimes.clear();
 
         while (server.processed < maxTasks && !eventQueue.isEmpty()) {
@@ -158,7 +168,7 @@ public class Simulation {
             switch (event.type) {
                 case ARRIVAL : handleArrival(event); break;
                 case DEPARTURE : {
-                    totalDelay += globalClock - event.task.arrivalTime;
+                    //totalDelay += globalClock - event.task.arrivalTime;
                     handleDeparture(event);
                     break;
                 }

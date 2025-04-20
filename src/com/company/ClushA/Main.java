@@ -9,7 +9,7 @@ public class Main {
         int K = 1000;
 
         Simulation simulation = new Simulation(bufferSize, K, meanTau, meanSigma);
-        simulation.run();
+        //simulation.run();
     }
 }
 

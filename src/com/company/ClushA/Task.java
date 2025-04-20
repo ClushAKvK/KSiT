@@ -1,17 +1,19 @@
-package com.company.ClushA;
+    package com.company.ClushA;
 
-public class Task {
-    public int id;
-    public double arrivalTime;
-    public double serviceTime;
-    public double departureTime;
+    public class Task {
+        public int id;
+        public double arrivalTime;
+        public double serviceTime;
+        public double departureTime;
 
-    // ..
-    public double queueEnterTime; // Время попадания в очередь
-    public double queueExitTime;  // Время выхода из очереди
+        // ..
+        public double queueEnterTime; // Время попадания в очередь
+        public double queueExitTime;  // Время выхода из очереди
 
-    public double getQueueWaitTime() {
-        return queueExitTime - queueEnterTime;
+        public double initialArrivalTime = -1;
+
+        public double getQueueWaitTime() {
+            return queueExitTime - queueEnterTime;
+        }
     }
-}
 
