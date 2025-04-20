@@ -9,8 +9,8 @@ public class SimulationRunner {
         final int bufferSize = 15;
         final double timePerExperiment = 10.0;
 
-        final double meanTau = 1.5;
-        final double meanSigma = 1.0;
+        final double meanTau = 1.6;
+        final double meanSigma = 1.5;
 
         final double R_a = 0.1;
         final double R_b = 5.2;

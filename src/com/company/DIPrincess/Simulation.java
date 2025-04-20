@@ -78,42 +78,6 @@ public class Simulation {
         }
     }
 
-
-    private void draft_handleArrival(Event e) {
-        Task task = e.task;
-
-        if (!server.isBusy()) {
-            server.startTask(task, globalClock);
-            task.departureTime = globalClock + task.serviceTime;
-            scheduleEvent(task.departureTime, Event.Type.DEPARTURE, task);
-        } else {
-            server.addToBuffer(task);
-        }
-
-        // Планируем следующее прибытие
-        if (globalClock < maxTime) {
-            scheduleNextArrival(globalClock);
-        }
-    }
-
-    private void draft_handleDeparture(Event e) {
-//        server.finishCurrentTask();
-        server.processed++;
-
-        // metrick task 2
-        depaturesCount++;
-        if (e.task.departureTime - lastDepartureTime < Aout)
-            depaturesCountAout++;
-        lastDepartureTime = e.task.departureTime;
-
-        Task nextTask = server.fetchFromBuffer();
-        if (nextTask != null) {
-            server.startTask(nextTask, globalClock);
-            nextTask.departureTime = globalClock + nextTask.serviceTime;
-            scheduleEvent(nextTask.departureTime, Event.Type.DEPARTURE, nextTask);
-        }
-    }
-
     private void handleDeparture(Event e) {
         Task completedTask = e.task;
 
@@ -151,19 +115,9 @@ public class Simulation {
         eventQueue.add(new Event(time, type, task));
     }
 
-    // Распределение tau: экспоненциальное (пуассоновский поток)
-    private double draft_sampleTau() {
-        return -meanTau * Math.log(1 - Math.random());
-    }
-
     // Равномерно распеределение на участке R[a, b]
     private double sampleTau() {
-        return R_a + (R_b - R_a) * Math.random();
-    }
-
-    // Распределение sigma: можно заменить на любое другое
-    private double draft_sampleSigma() {
-        return Math.max(0.0, new java.util.Random().nextGaussian() * (meanSigma / 3) + meanSigma);
+        return R_a + (R_b - R_a) * Math.random() / 5;
     }
 
     // Гаусовскокое распеределение

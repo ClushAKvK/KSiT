@@ -11,7 +11,7 @@ public class GraphBuilder {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         for (int n = 0; n < P_Ln.length; n++) {
-            dataset.addValue(P_Ln[n], "P(Ln)", String.valueOf(n));
+            dataset.addValue(P_Ln[n], "P(Ln)", String.valueOf(n + 1));
         }
 
         JFreeChart chart = ChartFactory.createBarChart(
